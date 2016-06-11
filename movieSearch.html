@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Movie Search</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+
+<body>
+    <!-- ADD A SEARCH BOX -->
+    <!-- adds a button with a search box -->
+    
+    <form type="text">
+        <input id='movieSearch' type="text">
+        <button id='searchButton' type="submit">Search Movies!</button>
+    </form>
+    <h1 style='color:blue; text-align: center;'>Movie Search</h1>
+    <hr>
+    <!-- add buttons -->
+    <div id='buttonList'>
+        <button class="moviebutton" data-movie="50 shades of gray">50 Shades of Gray</button>
+        <button class="moviebutton" data-movie="The Simpsons">The Simpsons</button>
+        <button class="moviebutton" data-movie="The Shawshank Redemption">The Shawshank Redemption</button>
+    </div>
+    <!-- div to store the images -->
+
+    <div class='container' id='placeHolder'>
+        <div class="row">
+            <div class="col-md-1">giphyimage</div>
+            <div class="col-md-1">giphyimage</div>
+            <div class="col-md-1">giphyimage</div>
+            <div class="col-md-1">giphyimage</div>
+            <div class="col-md-1">giphyimage</div>
+            <div class="col-md-1">giphyimage</div>
+
+        </div>
+    </div>
+    <!-- jquery and javascript cdn -->
+    <script src='http://code.jquery.com/jquery-2.1.3.min.js'></script>
+    <script type="text/javascript">
+    // buton clickert
+
+    function makeApiCall(queryUrl) { // code to use with api
+          $('#placeHolder').empty();
+        $.ajax({
+                url: queryUrl,
+                method: 'GET'
+            })
+           	 .done(function(response) {
+   				// response is the response from the api call
+    			var results = response.data;
+                //loops through each record
+                for (var i = 0; i < results.length; i++) {
+                    // makes a new div
+                    var movieDiv = $('<div>');
+                    //makes a new paragraph and adds the rating 
+                    var p = $('<p>').text("Rating: " + results[i].rating);
+                    // stores the images
+                    var movieImage = $('<img>')
+                        // shows the images 
+                    movieImage.attr('src', results[i].images.fixed_height.url);
+                    // adds var p to movieDiv
+                    movieDiv.append('<p>');
+                    // adds img to movieDiv
+                    movieDiv.append('<img>')
+                    // adding the row and col so movies can be injected in there
+      				$('#placeHolder').append('<div class="row">'+ '<div class="col-md-1">' + '<img src="'+results[i].images.fixed_height.url+'">' )
+                }
+
+          });
+    };
+    // enables the search button to work
+    $('#searchButton').on('click', function() {
+        //.val gets the value of whatever the user types
+        var userText = $('#movieSearch').val();
+        // makes a new button
+        var newButton = $('<button>').text(userText);
+        newButton.attr('data-movie', userText);
+        newButton.addClass('moviebutton');
+        $('#buttonList').append(newButton);
+        // dont refresh the page when user hits submit
+        var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + userText + "&api_key=dc6zaTOxFJmzC&limit=10";
+        makeApiCall(queryUrl);
+        return false;
+    });
+
+    $(document).on("click", ".moviebutton", function(event) {
+        // clears the images when the next button is clicked
+      
+        // <!-- this refers to the button being clicked -->
+        var movie = $(this).data('movie');
+        // what do we add here
+        var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + movie + "&api_key=dc6zaTOxFJmzC&limit=10";
+        makeApiCall(queryUrl);
+    });
+    </script>
+</body>
+
+</html>
