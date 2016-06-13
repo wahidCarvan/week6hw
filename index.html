@@ -26,21 +26,12 @@
     <!-- div to store the images -->
 
     <div class='container' id='placeHolder'>
-        <div class="row">
-            <div class="col-md-1">giphyimage</div>
-            <div class="col-md-1">giphyimage</div>
-            <div class="col-md-1">giphyimage</div>
-            <div class="col-md-1">giphyimage</div>
-            <div class="col-md-1">giphyimage</div>
-            <div class="col-md-1">giphyimage</div>
-
-        </div>
     </div>
     <!-- jquery and javascript cdn -->
     <script src='http://code.jquery.com/jquery-2.1.3.min.js'></script>
     <script type="text/javascript">
     // buton clickert
-
+// step 2 make api call function
     function makeApiCall(queryUrl) { // code to use with api
           $('#placeHolder').empty();
         $.ajax({
@@ -51,23 +42,29 @@
    				// response is the response from the api call
     			var results = response.data;
                 //loops through each record
-                for (var i = 0; i < results.length; i++) {
+                var row = $('<div class="row">');
+                for (var i = 0; i < 5; i++) {
                     // makes a new div
-                    var movieDiv = $('<div>');
+                    var movieDiv = $('<div class="col-md-2">');
                     //makes a new paragraph and adds the rating 
                     var p = $('<p>').text("Rating: " + results[i].rating);
                     // stores the images
-                    var movieImage = $('<img>')
+                    var movieImage = $('<img class="img-responsive">')
                         // shows the images 
                     movieImage.attr('src', results[i].images.fixed_height.url);
                     // adds var p to movieDiv
-                    movieDiv.append('<p>');
+                    // movieDiv.append('<p>');
                     // adds img to movieDiv
-                    movieDiv.append('<img>')
+                    // movieDiv.append('<img>')
                     // adding the row and col so movies can be injected in there
-      				$('#placeHolder').append('<div class="row">'+ '<div class="col-md-1">' + '<img src="'+results[i].images.fixed_height.url+'">' )
+      				movieDiv.append(p);
+                    movieDiv.append(movieImage);
+
+                    row.append(movieDiv)
+                    // $('.col-md-1').append(movieImage)
                 }
 
+                $('#placeHolder').append(row);
           });
     };
     // enables the search button to work
